@@ -210,10 +210,10 @@
                 Digital Filtering (Butterworth 4th order) results in large oscillations at the beginning of the filtered signal, solved by removing the first 30% of the filtered signal.
               </li>
               <li>
-                Peak detection cannot reliably detect pulses due to the artifacts, solved by doing FFT and frequency analysis to obtain heartrate (heartrate = frequency of max power in power spectrum * 60).
+                Peak detection cannot reliably detect pulses due to the artifacts, solved by doing FFT and frequency analysis to obtain heart rate (heart rate = frequency of max power in power spectrum * 60).
               </li>
               <li>
-                The nonlinear equation we proposed previously (involves log10(ratio)) cannot reliably obtain the SpO2 levels, solved by switching to empirical linear approximation of the illuminance ratio. The illuminance ratio between two wavelengths needs to be normalized against their offset, details discussed in the design notes.
+                The nonlinear equation we proposed previously (involves log10(ratio)) cannot reliably obtain the SpO2 levels, solved by switching to the empirical linear approximation of the illuminance ratio. The illuminance ratio between two wavelengths needs to be normalized against their offset, details discussed in the design notes.
               </li>
               <li>
                 The offsets of the input voltages from the circuit cannot represent the DC portion of the compartmentalized finger optical model.
