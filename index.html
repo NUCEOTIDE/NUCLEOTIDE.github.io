@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Digital Pulse Oximeter</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        p {
+            text-indent: 30px;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+
+    <h1>Digital Pulse Oximeter (DPO)</h1>
+
+    <h2>Introduction</h2>
+    <p>
+        For the final project, we want to design a Digital Pulse Oximeter (DPO) that can measure a person's blood oxygen saturation level (SpO2).
+        This is vital for monitoring patients with conditions affecting their blood oxygen levels, such as asthma, pneumonia, 
+        and COVID-19. DPO can detect hypoxemia (low blood oxygen levels) before it becomes dangerous. This early 
+        detection is crucial, especially in emergencies, such as monitoring patients with respiratory or cardiovascular conditions.
+         Beyond clinical settings, DPO can also be used in fitness and wellness contexts, such as by athletes training at high
+          altitudes or in other specialized conditions to ensure safe and effective training regimes. DPO provide a non-invasive way to monitor the oxygenation of a patient's hemoglobin. This can reduce the chance of a user getting infection and decrease the pain feeling. 
+          Usually, a sensor is placed on a part with a thin skin layer of the patient's body, such as a fingertip. 
+    </p>
+      
+    <img src="" alt="Our Sketch of Digital Pulse Oximeter">
+
+    <p>
+
+    </p>
+    <h2>Requirements</h2>
+    <table>
+      <table>
+        <tr>
+            <th>Requirement</th>
+            <th>Comment</th>
+        </tr>
+        <tr>
+            <td>Users shall interface with the prototype via a Labview Control Panel</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>System will provide debug logs to the Labview Control Panel</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>System will sample new photodiode data at least every 3 ms (interval &lt; 60Hz power line).</td>
+            <td>(sampling with a higher frequency allows higher-quality signal conditioning) (Actual performance, 1 ms - x00 ms with a timed while loop)</td>
+        </tr>
+        <tr>
+            <td>System will sample photodiode data continuously to obtain an moving average heart rate and blood oxygen saturation level.</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>System will sample photodiode data under controlled environment (fixed ambient lighting / sealed environment)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>System will transform and amplify the photodiode signal fed into myRio AI ports should be 0 to &gt;80% of channel range (± 10V)</td>
+            <td>System has large offset but small peak-peak amplitudes</td>
+        </tr>
+        <tr>
+            <td>System will filter the photodiode signal approately to get rid of sensor noise/drift, bias currents of electrical components, and power-line noise. (at least 0.8x heart rate (Hz) &lt; filter passband &lt; powerline noise frquency)</td>
+            <td>(will need op-amps TLE 2074 or similar, INA 141 or AD620 if necessary, resistors of 10㏀, 100㏀, and 1㏁; capacitors of 10 𝝁F and 100 nF) (Preliminary calculations only) (Actual system uses LM324 and UA741 with worse performance. Circuit characterized cutoff frequencies at around 2 - 10 Hz)</td>
+        </tr>
+        <tr>
+            <td>System will automatically calibrate upon start button press for different patients (different finger thicknesses, skin colors, etc)</td>
+            <td>(will need a reference to determine the effectiveness and accuracy of the system)</td>
+        </tr>
+        <tr>
+            <td>Prototype weight (+/-) (not including the breadboard, myRio, or usb cables) </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype width (not including the breadboard, myRio, or usb cables) </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype length (not including the breadboard, myRio, or usb cables) </td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype shall operate for 10+ minutes</td>
+            <td>(The system ended up using myRio power, and myRio uses wall power)</td>
+        </tr>
+        <tr>
+            <td>Prototyoe shall power the LEDs appropriately (given the forward voltage and desired current of the LEDs, determine the appropriate voltage divider and resistors in series)</td>
+            <td>(The desired current of IR LED is ~ 50 mA, Red ~ 20 mA; the forward voltage of the IR LED is ~ 1.3V, Red ~ 2.2V)</td>
+        </tr>
+        <tr>
+            <td>Prototype LEDs shall not overheat (reach temperature &gt; 40℃) in 5 minutes of continuous operation</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Number of system bugs detected upon prototype demonstration</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Number of system bugs detected upon prototype demonstration</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Project professionalism (are wires hanging out? duct tape used? Electrical tape on wires vs. heat-shrink? etc.)</td>
+            <td>(10 being most professional)</td>
+        </tr>
+        <tr>
+            <td>Prototype uses LabVIEW</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype uses the myRIO</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype uses 2+ actors</td>
+            <td>1 Pmod CLS LCD Display, 1 Start Button, 2 LEDs (1 Red 660 nm, 1 IR 940 nm)</td>
+        </tr>
+        <tr>
+            <td>Prototype uses at minimum 2 actors to perform meaningful, complex system interactions (i.e. not just using an actor based of a single, simple, sensor data). An example: basic interaction is a single LED indicating prototype is ON/OFF, vs. meaningful interaction is an RGB LED using color to indicate temperature of coffee using a thermocouple.</td>
+            <td>The prototype will obtain heart rate and blood oxygen level over a period of time (5-10s) after a button press, and display them on the LCD display.</td>
+        </tr>
+        <tr>
+            <td>Prototype uses 2+ sensors</td>
+            <td>2 photodiodes (1 red, 1 infrared)</td>
+        </tr>
+        <tr>
+            <td>Prototype uses at minimum 2 sensors of sufficient complexity. For example: a simple sensor would be a photodiode (boolean ON/OFF), and a complex sensor would be an accelerometer (non-boolean data).</td>
+            <td>The photodiodes will measure quantitative attenuation of the lights of 2 wavelength as patient&#39;s heart beats. Each heart beat brings pulsatile arterial blood into the finger and attenuate lights more. The attenuation differences are then used to obtain the blood oxygen level.</td>
+        </tr>
+        <tr>
+            <td>Prototype design/assembly is unique (i.e. not found from a brief Google search)</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype creativity/uniqueness, as determined by customer (Dr. Noel)</td>
+            <td>(10 being most creative/unique)</td>
+        </tr>
+        <tr>
+            <td>Prototype uses at least 1 advanced mechatronics concept</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>Prototype goes above and beyond with exploring advanced mechatronics concept</td>
+            <td>Bonus 5 points to overall project</td>
+        </tr>
+    </table>
+        
+    </table>
+
+    <h2>Why These Requirements?</h2>
+    <p>
+        We choose these requirements in order to make our product compact, portable and easy to use, making them accessible 
+        not only in hospitals but also in community clinics, ambulances, and home care settings.
+        For the circuit component, we want to amplify the current signals from the two photo diodes and use the light attenuation differences to calculate the 
+        blood oxygen level. We also want to filter sensor noise, circuit noise as much as possible to make our readings accurate and stable. Finally, the data we want to 
+        calibrate the coefficients in the calculation to make the readings more accurate.
+   
+      </p>
+
+    <h2>Video Demonstration</h2>
+    <p>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/8dFnYiLKRVo?si=sPKspcWPECEw28X7" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </p>
+
+    <h2>Challenges Encountered</h2>
+    <p>
+        <ol>
+          <li>
+            Circuit characterization:
+            <ul>
+                <li>
+                  LM324 active filter circuit experimental gain is 1/2 of the theoretical gain, resulting in smaller than expected signal amplitudes, unsolved.
+                </li>
+                <li>
+                  LM324 R trans-impedance circuit output is noisy, solved by additional filtering (a 4.7 uF capacitor parallelly to the feedback resistor).
+                </li>
+                <li>
+                  Combined input/output offset voltage of LM324 and UA741 resulting negative DC offset at output, solved by digital filtering and adding calibrated offsets in LabVIEW.
+                </li>
+            </ul>
+          </li>
+          <li>
+            Sensors:
+            <ul>
+              <li>
+                Unstable LED connection to circuit, solved by soldering the LEDs to jumper cables.
+              </li>
+              <li>
+                Photo-resistor behave non-ideally, solved by adding additional filtering stage at transimpedance circuit.
+              </li>
+
+          </ul>
+          </li>
+          <li>
+            LabVIEW Program:
+            <ul>
+              <li>
+                Digital Filtering (Butterworth 4th order) results large oscillations at the beginning of the filtered signal, solved by removing the first 30% of the filtered signal.
+              </li>
+              <li>
+                Peak detection cannot reliably detect pulses due to the artifacts, solved by doing FFT and frequency analysis to obtain heartrate (heartrate = frequency of max power in power spectrum * 60).
+              </li>
+              <li>
+                The nonlinear equation we proposed previously (involves log10(ratio)) cannot reliably obtain the SpO2 levels, solved by switching to empirical linear approximation of the illuminance ratio. The illuminance ratio between two wavelengths needs to be normalized against their offset, details discussed in the design notes.
+              </li>
+              <li>
+                The offsets of the input voltages from the circuit cannot represent the DC portion of the compartmentalized finger optical model.
+              </li>
+
+
+
+              Ideally, the Peak-Peak amplitudes of the input voltages (R and IR) are the AC component, and the offset is the DC component. However, due to input/output offsets and digital filtering. The offset does not represent the DC component. Thus, additional calibration is required to manually apply offsets to both channels. Solved by calibration with respect to a commercial pulse oximeter product.
+          </ul>
+          </li>
+          <li>
+            Assembly testing:
+            <ul>
+              <li>
+                Our project cannot measure and display continuously, could be solved by using producer-consumer loop in LabVIEW design.
+              </li>
+              <li>
+                The channel offsets are not calibrated against the gold standard.
+              </li>
+          </ul>
+          </li>
+        </ol>
+    </p>
+
+    <h2>Conclusion</h2>
+    <p>
+      To make our design function as other commercial products, we need to make the following improvements in the future.
+      First, we can make our DPO transmit data remotely, aiding in telemedicine and remote patient monitoring, which became particularly important during the COVID-19 pandemic.
+            Second, we can make the product more portable using integrated circuits rather than bread-board circuits.
+        Finally, we can modify the circuit or upgrade our electronic parts to get better-filtered signals, which can make the measurements more accurate and stable.
+      
+    </p>
+
+    <h2>Project Files</h2>
+    <p>
+        <a href="">Files</a>
+        <a href="">Code</a>
+        <a href="">Presentation</a>
+        <a href="">State Machine Diagram</a>
+    </p>
+
+</body>
+</html>
